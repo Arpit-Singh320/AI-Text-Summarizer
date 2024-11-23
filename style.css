@@ -78,6 +78,19 @@ button:hover {
   transform: translateY(-5px);
 }
 
+/* Placeholder Styling Fix */
+textarea::placeholder {
+  color: #ffffff;
+  opacity: 0.7;
+}
+
+/* Adjust Animations for Better Performance */
+textarea,
+#summary-output {
+  animation: gradientShift 5s infinite ease-in-out; /* Slower animation */
+}
+
+
 /* Summary Output Styling */
 #summary-output {
   margin-top: 20px;

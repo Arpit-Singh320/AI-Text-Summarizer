@@ -1,31 +1,41 @@
-// Function to query Hugging Face API for text summarization using distilbart-cnn-12-6 model
+// Function to query Hugging Face API for text summarization
 async function querySummarization(data) {
-  const response = await fetch(
+  try {
+    const response = await fetch(
       "https://api-inference.huggingface.co/models/sshleifer/distilbart-cnn-12-6",
       {
-          method: "POST",
-          headers: {
-              Authorization: "Bearer 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", // Replace with your actual token
-              "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
+        method: "POST",
+        headers: {
+          Authorization: "Bearer YOUR_API_TOKEN  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", // Replace with your token
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
       }
-  );
-  return await response.json();
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP Error: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error querying summarization:", error);
+    return null;
+  }
 }
 
 // Event Listener for Summarize Button
 document.getElementById("summarize-btn").addEventListener("click", async () => {
-  const inputText = document.getElementById("input-text").value;
+  const inputText = document.getElementById("input-text").value.trim();
 
   // Show error notification if input is empty
-  if (!inputText.trim()) {
-      Toastify({
-          text: "Please enter some text to summarize.",
-          backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
-          duration: 3000
-      }).showToast();
-      return;
+  if (!inputText) {
+    Toastify({
+      text: "Please enter some text to summarize.",
+      backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
+      duration: 3000,
+    }).showToast();
+    return;
   }
 
   // Display loading message
@@ -37,8 +47,9 @@ document.getElementById("summarize-btn").addEventListener("click", async () => {
 
   // Display summary or error message
   if (result && result[0] && result[0].summary_text) {
-      summaryOutput.innerHTML = result[0].summary_text;
+    summaryOutput.innerHTML = result[0].summary_text;
   } else {
-      summaryOutput.innerHTML = "Sorry, an error occurred. Please try again later.";
+    summaryOutput.innerHTML =
+      "Sorry, an error occurred. Please try again later.";
   }
 });
